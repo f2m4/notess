@@ -1,0 +1,33 @@
+凤凰os的linux安装:
+
+1.随便找个分区下面的目录解压进去。
+2.新建一个data目录。
+3.system.sfs解压system.img. 这里会遇到问题。如何解压。一个简单的方法就是mount 挂载以为。然后再复制回去。
+以上三步回遇到权限问题，自行更改。chmod   chown
+下面是有点麻烦的步骤，主要是修改grub.  我使用的还是传统分区。囧。ufi的使用请搜索。
+现在的grub基本都是指grub2了。配置文件使用。/etc/grub.d/40-custom
+官方提供的修改内容为：
+
+menuentry ‘Phoenix OS’ --class android-x86 {
+	search --set=root --file /PhoenixOS/kernel
+	linux /PhoenixOS/kernel quiet root=/dev/ram0 SRC=/PhoenixOS vga=auto
+	initrd /PhoenixOS/initrd.img
+}
+
+这里自己可以根据实际情况修改一下。
+我把iso 解压放在了hda6下面的PhoenixOS。
+第一行 set root 可以自己指定。注意一点grub2硬盘从0开始计算。分区从1开始计算。
+例如。 set＝root(hd0,6)
+第二行可以添加。 DATA＝/PhoenixOS/data
+下面是具体格式
+menuentry “Phoenix OS”  {
+	set=root(hd0,6)
+	linux /PhoenixOS/kernel quiet root=/dev/ram0 SRC=/PhoenixOS DATA=/PhoenixOS/data vga=auto
+	initrd /PhoenixOS/initrd.img
+}
+
+然后别忘了 update-grub
+或使用 grub2-mkconfig -o /boot/grub2/grub.cfg 来更新开机的配置文件！
+
+  
+
